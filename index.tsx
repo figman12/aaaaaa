@@ -17,7 +17,6 @@
 */
 
 import { Plugin, Patcher } from '@vencord/plugin';
-import fetch from 'node-fetch'; // Use node-fetch or native fetch if available
 
 // LibreTranslate API endpoint
 const LIBRE_TRANSLATE_API = 'https://libretranslate.com/translate';
@@ -79,3 +78,4 @@ export default class AutoTranslatePlugin extends Plugin {
     Patcher.unpatchAll();
   }
 }
+
