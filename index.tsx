@@ -16,8 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { Plugin, Patcher, Utilities } from 'vencord';
-import axios from 'axios';
+import { Plugin, Patcher } from '@vencord/plugin';
+import fetch from 'node-fetch'; // Use node-fetch or native fetch if available
 
 // LibreTranslate API endpoint
 const LIBRE_TRANSLATE_API = 'https://libretranslate.com/translate';
@@ -28,14 +28,25 @@ const TARGET_LANGUAGE = 'en'; // Example: English
 // Function to translate text using LibreTranslate
 const translateText = async (text: string, targetLanguage: string) => {
   try {
-    const response = await axios.post(LIBRE_TRANSLATE_API, {
-      q: text,
-      source: 'auto', // Auto-detect source language
-      target: targetLanguage,
-      format: 'text',
+    const response = await fetch(LIBRE_TRANSLATE_API, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        q: text,
+        source: 'auto', // Auto-detect source language
+        target: targetLanguage,
+        format: 'text',
+      }),
     });
 
-    return response.data.translatedText;
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data.translatedText;
   } catch (error) {
     console.error('Error translating text:', error);
     return null;
